@@ -22,7 +22,24 @@ async function handleGetAnalytics(req, res) {
   });
 }
 
+async function handleRedirectUrl(req, res) {
+  const date = new Date(Date.now());
+  const shortId = req.params.shortId;
+  const entry = await URL.findOneAndUpdate(
+    { shortId },
+    {
+      $push: {
+        visitHistory: {
+          timeStamp: date.toLocaleString(),
+        },
+      },
+    }
+  );
+  res.redirect(entry?.redirectURL);
+}
+
 module.exports = {
   handleGenerateNewShortUrl,
   handleGetAnalytics,
+  handleRedirectUrl,
 };
